@@ -238,7 +238,7 @@ module Resque
   # Same, but at the front of the queue
 
   def prequeue(klass, *args)
-    preqeue_to(queue_from_class(klass), klass, *args)
+    prequeue_to(queue_from_class(klass), klass, *args)
   end
 
 
