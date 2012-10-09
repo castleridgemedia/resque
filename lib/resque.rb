@@ -150,6 +150,12 @@ module Resque
     redis.rpush "queue:#{queue}", encode(item)
   end
 
+  # Same, but at the beginning
+  def lpush(queue, item)
+    watch_queue(queue)
+    redis.lpush "queue:#{queue}", encode(item)
+  end
+
   # Pops a job off a queue. Queue name should be a string.
   #
   # Returns a Ruby object.
@@ -229,6 +235,13 @@ module Resque
     enqueue_to(queue_from_class(klass), klass, *args)
   end
 
+  # Same, but at the front of the queue
+
+  def prequeue(klass, *args)
+    preqeue_to(queue_from_class(klass), klass, *args)
+  end
+
+
   # Just like `enqueue` but allows you to specify the queue you want to
   # use. Runs hooks.
   #
@@ -252,6 +265,21 @@ module Resque
     end
 
     return true
+  end
+
+  # Same, but at the front of the queue
+
+  def prequeue_to(queue, klass, *args)
+    before_hooks = Plugin.before_enqueue_hooks(klass).collect do |hook|
+      klass.send(hook, *args)
+    end
+    return nil if before_hooks.any { |result| result == false }
+
+    Job.create(queue, klass, *args)
+
+    Plugin.after_enqueue_hooks(klass).each do |hook|
+      klass.send(hook, *args)
+    end
   end
 
   # This method can be used to conveniently remove a job from a queue.
