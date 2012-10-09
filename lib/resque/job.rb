@@ -236,7 +236,7 @@ module Resque
         # decode(encode(args)) to ensure that args are normalized in the same manner as a non-inline job
         new(:inline, {'class' => klass, 'args' => decode(encode(args))}).perform
       else
-        Resque.push(queue, :class => klass.to_s, :args => args)
+        Resque.lpush(queue, :class => klass.to_s, :args => args)
       end
     end
   end
