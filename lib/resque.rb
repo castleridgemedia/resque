@@ -146,14 +146,12 @@ module Resque
   #
   # Returns nothing
   def push(queue, item)
-    puts "called append"
     watch_queue(queue)
     redis.rpush "queue:#{queue}", encode(item)
   end
 
   # Same, but at the beginning
   def lpush(queue, item)
-    puts "called prepend"
     watch_queue(queue)
     redis.lpush "queue:#{queue}", encode(item)
   end
