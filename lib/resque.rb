@@ -275,7 +275,7 @@ module Resque
     end
     return nil if before_hooks.any? { |result| result == false }
 
-    Job.create(queue, klass, *args)
+    PrependJob.create(queue, klass, *args)
 
     Plugin.after_enqueue_hooks(klass).each do |hook|
       klass.send(hook, *args)
