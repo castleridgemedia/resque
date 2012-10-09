@@ -273,7 +273,7 @@ module Resque
     before_hooks = Plugin.before_enqueue_hooks(klass).collect do |hook|
       klass.send(hook, *args)
     end
-    return nil if before_hooks.any { |result| result == false }
+    return nil if before_hooks.any? { |result| result == false }
 
     Job.create(queue, klass, *args)
 
