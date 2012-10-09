@@ -152,6 +152,7 @@ module Resque
 
   # Same, but at the beginning
   def lpush(queue, item)
+    puts "called me"
     watch_queue(queue)
     redis.lpush "queue:#{queue}", encode(item)
   end
